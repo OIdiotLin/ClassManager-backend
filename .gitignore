@@ -1,0 +1,6 @@
+*__pycache__/
+.idea/
+
+# Sensitive Files
+*sensitive.py
+
