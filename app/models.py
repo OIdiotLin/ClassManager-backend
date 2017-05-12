@@ -4,7 +4,8 @@ from django.db import models
 
 
 class Person(models.Model):
-	student_number = models.CharField(verbose_name = '学号', max_length = 12, unique = True, primary_key = True)
+	id = models.AutoField(verbose_name = '索引', primary_key = True, unique = True)
+	student_number = models.CharField(verbose_name = '学号', max_length = 12, unique = True)
 	name = models.CharField(verbose_name = '姓名', max_length = 10)
 	pinyin = models.CharField(verbose_name = '拼音', max_length = 25)
 	gender = models.CharField(verbose_name = '性别', choices = (('F', 'Female'), ('M', 'Male')), max_length = 2)
