@@ -4,7 +4,6 @@ from django.db import models
 
 
 class Person(models.Model):
-	id = models.AutoField(verbose_name = '索引', primary_key = True, unique = True)
 	student_number = models.CharField(verbose_name = '学号', max_length = 12, unique = True)
 	name = models.CharField(verbose_name = '姓名', max_length = 10)
 	pinyin = models.CharField(verbose_name = '拼音', max_length = 25)
@@ -24,7 +23,6 @@ class Person(models.Model):
 
 
 class Activity(models.Model):
-	id = models.AutoField(verbose_name = '索引', primary_key = True, unique = True)
 	name = models.CharField(verbose_name = '活动名称', max_length = 15)
 	date = models.DateField(verbose_name = '日期', blank = True)
 	time = models.TimeField(verbose_name = '开始时间', blank = True)
