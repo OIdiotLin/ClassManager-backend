@@ -8,4 +8,5 @@ urlpatterns = [
 	url(r'^doc/api/', views.show_api),
 	url(r'^api/get_person_list/', views.get_person_list),
 	url(r'^api/add_person/', views.add_person),
+	url(r'^api/delete_person/', views.delete_person),
 ]

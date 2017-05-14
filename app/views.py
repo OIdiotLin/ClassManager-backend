@@ -56,6 +56,7 @@ def get_person_list(request):
 def add_person(request):
 	"""
 	Add new person into MySQL databases
+	Http form MUST includes `student_number`, `name`, `pinyin` and `gender`
 	:param request: httpRequest
 	:return: status (success or fail), err_info and err_code
 	"""
@@ -75,6 +76,42 @@ def add_person(request):
 				participation = request.POST.get('participation', 0)
 			)
 			new_person.save()
+			return JsonResponse({'status': 'success'})
+
+		except DatabaseError as e:
+			return JsonResponse(
+				{
+					'status': 'fail',
+					'err_code': e.args[0],
+					'err_info': e.args[1],
+				}
+			)
+
+
+@csrf_exempt
+def delete_person(request):
+	"""
+	Delete a person by his or her student_number
+	Http form MUST includes `student_number`
+	:param request: httpRequest
+	:return: status (success or fail), err_info and err_code
+									doesn't exist	0
+	"""
+	if request.method == 'POST':
+
+		try:
+			target_person = Person.objects.filter(
+				student_number = request.POST.get('student_number')
+			)
+			if not target_person.exists():
+				return JsonResponse(
+					{
+						'status': 'fail',
+						'err_code': 4004,
+						'err_info': 'no object has student_number = ' + request.POST.get('student_number')
+					}
+				)
+			target_person.delete()
 			return JsonResponse({'status': 'success'})
 
 		except DatabaseError as e:
