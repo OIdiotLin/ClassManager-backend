@@ -7,4 +7,5 @@ urlpatterns = [
 	url(r'^admin/', admin.site.urls),
 	url(r'^doc/api/', views.show_api),
 	url(r'^api/get_person_list/', views.get_person_list),
+	url(r'^api/add_person/', views.add_person),
 ]
