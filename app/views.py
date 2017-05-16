@@ -165,6 +165,30 @@ def update_person(request):
 			)
 
 
+@csrf_exempt
+def get_activity_list(request):
+	"""
+	Get activity list from MySQL databases
+	:param request: HttpRequest
+	:return: activity list (json)
+	"""
+	if request.method == 'GET':
+
+		# if has filter
+		if 'filter' in request.GET:
+			data = Activity.objects.all().extra(
+				where = parse_multi_filters(request.GET['filter'])
+			)
+			content = serializers.serialize("json", data)
+			return HttpResponse(content, content_type = 'application/json')
+
+		# if requires all
+		else:
+			data = Activity.objects.all()
+			content = serializers.serialize("json", data)
+			return HttpResponse(content, content_type = 'application/json')
+
+
 def parse_multi_filters(constraint_expressions, divider = '$'):
 	"""
 	Parse filters as a list from the constraint expressions string
