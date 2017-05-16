@@ -17,4 +17,5 @@ urlpatterns = [
 	url(r'^api/get_activity_list/', views.get_activity_list),
 	url(r'^api/add_activity/', views.add_activity),
 	url(r'^api/delete_activity/', views.delete_activity),
+	url(r'^api/update_activity/', views.update_activity),
 ]

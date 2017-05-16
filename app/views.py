@@ -265,6 +265,47 @@ def delete_activity(request):
 			)
 
 
+@csrf_exempt
+def update_activity(request):
+	"""
+	Update an activity in databases
+	:param request: HttpRequest
+	:return: status (success or fail), err_info and err_code
+									doesn't exist	0
+	"""
+	if request.method == 'POST':
+
+		try:
+			target_activity = Activity.objects.get(
+				id = request.POST.get('target_id')
+			)
+			if not target_activity:
+				return JsonResponse(
+					{
+						'status':   'fail',
+						'err_code': 4004,
+						'err_info': 'no object has id = ' + request.POST.get('target_id')
+					}
+				)
+			# return JsonResponse(request.POST)
+
+			for key in request.POST.keys():
+				if not key == 'target_id':
+					exec('target_activity.' + key + '=' + str(repr(request.POST.get(key))))
+			target_activity.save()
+
+			return JsonResponse({'status': 'success'})
+
+		except DatabaseError as e:
+			return JsonResponse(
+				{
+					'status': 'fail',
+					'err_code': e.args[0],
+					'err_info': e.args[1],
+				}
+			)
+
+
 def parse_multi_filters(constraint_expressions, divider = '$'):
 	"""
 	Parse filters as a list from the constraint expressions string
