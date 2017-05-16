@@ -37,19 +37,28 @@ def get_person_list(request):
 	"""
 	if request.method == 'GET':
 
-		# if has filter
-		if 'filter' in request.GET:
-			data = Person.objects.all().extra(
-				where = parse_multi_filters(request.GET['filter'])
-			)
-			content = serializers.serialize("json", data)
-			return HttpResponse(content, content_type = 'application/json')
+		data = Person.objects.all()
 
-		# if requires all
-		else:
-			data = Person.objects.all()
-			content = serializers.serialize("json", data)
-			return HttpResponse(content, content_type = 'application/json')
+		if 'name' in request.GET.keys():
+			data = data.filter(name = request.GET['name'])
+
+		if 'gender' in request.GET.keys():
+			data = data.filter(gender = request.GET['gender'])
+
+		if 'native_province' in request.GET.keys():
+			data = data.filter(native_province = request.GET['native_province'])
+
+		if 'dormitory' in request.GET.keys():
+			data = data.filter(dormitory = request.GET['dormitory'])
+
+		if 'birthday' in request.GET.keys():
+			data = data.filter(birthday = request.GET['birthday'])
+
+		if 'participation' in request.GET.keys():
+			data = data.filter(participation = request.GET['participation'])
+
+		content = serializers.serialize('json', data)
+		return HttpResponse(content, content_type = 'application/json')
 
 
 @csrf_exempt
