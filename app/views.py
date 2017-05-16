@@ -165,7 +165,6 @@ def update_person(request):
 			)
 
 
-@csrf_exempt
 def get_activity_list(request):
 	"""
 	Get activity list from MySQL databases
@@ -174,19 +173,51 @@ def get_activity_list(request):
 	"""
 	if request.method == 'GET':
 
-		# if has filter
-		if 'filter' in request.GET:
-			data = Activity.objects.all().extra(
-				where = parse_multi_filters(request.GET['filter'])
-			)
-			content = serializers.serialize("json", data)
-			return HttpResponse(content, content_type = 'application/json')
+		data = Activity.objects.all()
 
-		# if requires all
-		else:
-			data = Activity.objects.all()
-			content = serializers.serialize("json", data)
-			return HttpResponse(content, content_type = 'application/json')
+		# if has filter
+		if 'name' in request.GET:
+			data = data.filter(name__contains = request.GET['name'])
+		if 'content' in request.GET:
+			data = data.filter(content__contains = request.GET['content'])
+
+		content = serializers.serialize('json', data)
+		return HttpResponse(content, content_type = 'application/json')
+
+
+@csrf_exempt
+def add_activity(request):
+	"""
+	Add new person into MySQL databases
+	Http form MUST includes `name`, `date` and `time`
+	:param request: httpRequest
+	:return: status (success or fail), err_info and err_code
+	"""
+	if request.method == 'POST':
+
+		try:
+			new_activity = Activity(
+				name = request.POST.get('name'),
+				date = request.POST.get('date'),
+				time = request.POST.get('time'),
+				place = request.POST.get('place', ''),
+				participation = request.POST.get('participation', 0),
+				participator = request.POST.get('participator', ''),
+				content = request.POST.get('content', ''),
+				images = request.POST.get('images', '')
+			)
+			new_activity.save()
+
+			return JsonResponse({'status': 'success'})
+
+		except DatabaseError as e:
+			return JsonResponse(
+				{
+					'status': 'fail',
+					'err_code': e.args[0],
+					'err_info': e.args[1],
+				}
+			)
 
 
 def parse_multi_filters(constraint_expressions, divider = '$'):
