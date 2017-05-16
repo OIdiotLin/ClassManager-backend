@@ -124,6 +124,47 @@ def delete_person(request):
 			)
 
 
+@csrf_exempt
+def update_person(request):
+	"""
+	Update a person in databases
+	:param request: HttpRequest
+	:return: status (success or fail), err_info and err_code
+									doesn't exist	0
+	"""
+	if request.method == 'POST':
+
+		try:
+			target_person = Person.objects.get(
+				student_number = request.POST.get('target_student_number')
+			)
+			if not target_person:
+				return JsonResponse(
+					{
+						'status': 'fail',
+						'err_code': 4004,
+						'err_info': 'no object has student_number = ' + request.POST.get('target_student_number')
+					}
+				)
+			# return JsonResponse(request.POST)
+
+			for key in request.POST.keys():
+				if not key == 'target_student_number':
+					exec('target_person.' + key + '=' + str(repr(request.POST.get(key))))
+			target_person.save()
+
+			return JsonResponse({'status': 'success'})
+
+		except DatabaseError as e:
+			return JsonResponse(
+				{
+					'status': 'fail',
+					'err_code': e.args[0],
+					'err_info': e.args[1],
+				}
+			)
+
+
 def parse_multi_filters(constraint_expressions, divider = '$'):
 	"""
 	Parse filters as a list from the constraint expressions string
