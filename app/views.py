@@ -229,6 +229,42 @@ def add_activity(request):
 			)
 
 
+@csrf_exempt
+def delete_activity(request):
+	"""
+	Delete an activity by primary-key `id`
+	Http form MUST includes `id`
+	:param request: httpRequest
+	:return: status (success or fail), err_info and err_code
+									doesn't exist	0
+	"""
+	if request.method == 'POST':
+
+		try:
+			target_activity = Activity.objects.filter(
+				id = request.POST.get('id')
+			)
+			if not target_activity.exists():
+				return JsonResponse(
+					{
+						'status': 'fail',
+						'err_code': 4004,
+						'err_info': 'no object has id = ' + request.POST.get('id')
+					}
+				)
+			target_activity.delete()
+			return JsonResponse({'status': 'success'})
+
+		except DatabaseError as e:
+			return JsonResponse(
+				{
+					'status': 'fail',
+					'err_code': e.args[0],
+					'err_info': e.args[1],
+				}
+			)
+
+
 def parse_multi_filters(constraint_expressions, divider = '$'):
 	"""
 	Parse filters as a list from the constraint expressions string
