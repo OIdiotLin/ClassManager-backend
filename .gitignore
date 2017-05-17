@@ -1,6 +1,6 @@
 *__pycache__/
 .idea/
-
+*.pyc
 # Sensitive Files
 *sensitive.py
-
+*.ini
