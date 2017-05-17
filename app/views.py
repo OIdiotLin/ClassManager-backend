@@ -304,15 +304,3 @@ def update_activity(request):
 					'err_info': e.args[1],
 				}
 			)
-
-
-def parse_multi_filters(constraint_expressions, divider = '$'):
-	"""
-	Parse filters as a list from the constraint expressions string
-	:param constraint_expressions: string
-	:param divider: char between two constraint expression
-	:return: filters (list)
-	"""
-	return constraint_expressions.split(divider)
-
-
