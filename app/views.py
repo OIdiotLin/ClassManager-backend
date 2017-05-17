@@ -5,10 +5,8 @@ from django.core import serializers
 
 from django.db import DatabaseError
 
-from django.forms.models import model_to_dict
-
-# Use Regular Expression
-import re
+# Use Token
+from .utils.token import token_check
 
 # Used when http-POST
 from django.views.decorators.csrf import csrf_exempt
@@ -69,7 +67,7 @@ def add_person(request):
 	:param request: httpRequest
 	:return: status (success or fail), err_info and err_code
 	"""
-	if request.method == 'POST':
+	if request.method == 'POST' and token_check(request):
 
 		try:
 			new_person = Person(
@@ -106,7 +104,7 @@ def delete_person(request):
 	:return: status (success or fail), err_info and err_code
 									doesn't exist	0
 	"""
-	if request.method == 'POST':
+	if request.method == 'POST' and token_check(request):
 
 		try:
 			target_person = Person.objects.filter(
@@ -141,7 +139,7 @@ def update_person(request):
 	:return: status (success or fail), err_info and err_code
 									doesn't exist	0
 	"""
-	if request.method == 'POST':
+	if request.method == 'POST' and token_check(request):
 
 		try:
 			target_person = Person.objects.get(
@@ -180,7 +178,7 @@ def get_activity_list(request):
 	:param request: HttpRequest
 	:return: activity list (json)
 	"""
-	if request.method == 'GET':
+	if request.method == 'GET' and token_check(request):
 
 		data = Activity.objects.all()
 
@@ -202,7 +200,7 @@ def add_activity(request):
 	:param request: httpRequest
 	:return: status (success or fail), err_info and err_code
 	"""
-	if request.method == 'POST':
+	if request.method == 'POST' and token_check(request):
 
 		try:
 			new_activity = Activity(
@@ -238,7 +236,7 @@ def delete_activity(request):
 	:return: status (success or fail), err_info and err_code
 									doesn't exist	0
 	"""
-	if request.method == 'POST':
+	if request.method == 'POST' and token_check(request):
 
 		try:
 			target_activity = Activity.objects.filter(
@@ -273,7 +271,7 @@ def update_activity(request):
 	:return: status (success or fail), err_info and err_code
 									doesn't exist	0
 	"""
-	if request.method == 'POST':
+	if request.method == 'POST' and token_check(request):
 
 		try:
 			target_activity = Activity.objects.get(
