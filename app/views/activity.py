@@ -89,7 +89,7 @@ def delete_activity(request):
 				return JsonResponse(
 					{
 						'status': 'fail',
-						'err_code': 4004,
+						'err_code': 404,
 						'err_info': 'no object has id = ' + request.POST.get('id')
 					}
 				)
@@ -124,7 +124,7 @@ def update_activity(request):
 				return JsonResponse(
 					{
 						'status':   'fail',
-						'err_code': 4004,
+						'err_code': 404,
 						'err_info': 'no object has id = ' + request.POST.get('target_id')
 					}
 				)
