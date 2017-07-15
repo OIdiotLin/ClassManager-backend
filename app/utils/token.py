@@ -53,8 +53,7 @@ def generate_token_get(request):
 	:return: md5
 	"""
 	keys = sorted(request.GET.keys())
-	values = [request.GET[key] for key in keys]
-	content = ''.join(keys + values)
+	content = ''.join(key + request.GET[key] for key in keys)
 	return encode_md5(content)
 
 
@@ -65,8 +64,7 @@ def generate_token_post(request):
 	:return: md5
 	"""
 	keys = sorted(request.POST.keys())
-	values = [request.POST[key] for key in keys]
-	content = ''.join(keys + values)
+	content = ''.join(key + request.POST[key] for key in keys)
 	return encode_md5(content)
 
 
