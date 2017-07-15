@@ -22,7 +22,7 @@ def get_activity_list(request):
 	:param request: HttpRequest
 	:return: activity list (json)
 	"""
-	if request.method == 'GET' and token_check(request):
+	if request.method == 'GET':
 
 		data = Activity.objects.all()
 
@@ -135,21 +135,52 @@ def update_activity(request):
 
 		try:
 			target_activity = Activity.objects.get(
-				id = request.POST.get('target_id')
+				id = request.POST.get('id')
 			)
 			if not target_activity:
 				return JsonResponse(
 					{
 						'status':   'fail',
 						'err_code': 404,
-						'err_info': 'no object has id = ' + request.POST.get('target_id')
+						'err_info': 'no object has id = ' + request.POST.get('id')
 					}
 				)
-			# return JsonResponse(request.POST)
+
+			original_participation = int(target_activity.participation)
+			current_participation = int(
+				request.POST.get('participation')
+				if 'participation' in request.POST.keys() else original_participation
+			)
+
+			original_participators = set(target_activity.participator.split(','))
+			current_participators = set(
+				request.POST.get('participator').split(',')
+				if 'participator' in request.POST.keys() else original_participators
+			)
+
+			added_participators = current_participators - original_participators
+			removed_participators = original_participators - current_participators
+
+			if not current_participation == original_participation:
+				for stu_num in original_participators:
+					person = Person.objects.get(student_number = stu_num)
+					person.participation += current_participation - original_participation
+					person.save()
+
+			for stu_num in added_participators:
+				person = Person.objects.get(student_number = stu_num)
+				person.participation += current_participation
+				person.save()
+
+			for stu_num in removed_participators:
+				person = Person.objects.get(student_number = stu_num)
+				person.participation -= current_participation
+				person.save()
 
 			for key in request.POST.keys():
-				if not key == 'target_id':
+				if not key == 'id':
 					exec('target_activity.' + key + '=' + str(repr(request.POST.get(key))))
+
 			target_activity.save()
 
 			return JsonResponse({'status': 'success'})
