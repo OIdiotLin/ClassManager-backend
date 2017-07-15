@@ -44,6 +44,9 @@ def get_person_list(request):
 		if 'participation' in request.GET.keys():
 			data = data.filter(participation = request.GET['participation'])
 
+		if 'student_number' in request.GET.keys():
+			data = data.filter(student_number = request.GET['student_number'])
+
 		content = serializers.serialize('json', data)
 		return HttpResponse(content, content_type = 'application/json')
 
@@ -168,7 +171,14 @@ def get_person_by_activity(request):
 	:return: Person.objects
 	"""
 	if request.method == 'GET':
-		activity = Activity.objects.get(pk = request.GET['id'])
+		activity = obj = Activity.objects.filter(pk = request.GET['id']).first()
+
+		if not activity:
+			return JsonResponse({
+				'status': 'fail',
+				'err_code': 404,
+				'err_info': 'no activity has id = ' + request.GET['id']
+			})
 
 		result = list(
 			Person.objects.get(student_number = sn) for sn in activity.participator.split(',')
