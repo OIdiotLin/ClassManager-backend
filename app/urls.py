@@ -13,6 +13,7 @@ urlpatterns = [
 	url(r'^api/add_person/', add_person),
 	url(r'^api/delete_person/', delete_person),
 	url(r'^api/update_person/', update_person),
+	url(r'^api/get_person_by_activity/', get_person_by_activity),
 
 	# ACTIVITY
 	url(r'^api/get_activity_list/', get_activity_list),

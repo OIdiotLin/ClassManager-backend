@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 # Models
 from app.models import Person
+from app.models import Activity
 
 
 def get_person_list(request):
@@ -158,3 +159,20 @@ def update_person(request):
 					'err_info': e.args[1],
 				}
 			)
+
+
+def get_person_by_activity(request):
+	"""
+	get persons involved with activity
+	:param request: Http request - get, args: id(activity_id)
+	:return: Person.objects
+	"""
+	if request.method == 'GET':
+		activity = Activity.objects.get(pk = request.GET['id'])
+
+		result = list(
+			Person.objects.get(student_number = sn) for sn in activity.participator.split(',')
+		)
+
+		content = serializers.serialize('json', result)
+		return HttpResponse(content, content_type = 'application/json')
