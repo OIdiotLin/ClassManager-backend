@@ -106,7 +106,7 @@ def delete_person(request):
 				return JsonResponse(
 					{
 						'status': 'fail',
-						'err_code': 4004,
+						'err_code': 404,
 						'err_info': 'no object has student_number = ' + request.POST.get('student_number')
 					}
 				)
@@ -141,7 +141,7 @@ def update_person(request):
 				return JsonResponse(
 					{
 						'status': 'fail',
-						'err_code': 4004,
+						'err_code': 404,
 						'err_info': 'no object has student_number = ' + request.POST.get('target_student_number')
 					}
 				)
