@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 # Models
 from app.models import Activity
+from app.models import Person
 
 
 def get_activity_list(request):
@@ -56,6 +57,14 @@ def add_activity(request):
 				content = request.POST.get('content', ''),
 				images = request.POST.get('images', '')
 			)
+
+			participators = new_activity.participator.split(',')
+
+			for stu_num in participators:
+				person = Person.objects.get(student_number = stu_num)
+				person.participation += int(new_activity.participation)
+				person.save()
+
 			new_activity.save()
 
 			return JsonResponse({'status': 'success'})
