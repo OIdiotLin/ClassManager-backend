@@ -3,10 +3,10 @@ from django.contrib import admin
 
 from app.views.person import *
 from app.views.activity import *
+from app.views.qiniuhelper import *
 
 urlpatterns = [
 	url(r'^admin/', admin.site.urls),
-	# url(r'^doc/api/', show_api),
 
 	# PERSON
 	url(r'^api/get_person_list/', get_person_list),
@@ -20,4 +20,8 @@ urlpatterns = [
 	url(r'^api/add_activity/', add_activity),
 	url(r'^api/delete_activity/', delete_activity),
 	url(r'^api/update_activity/', update_activity),
+
+	# QINIU
+	url(r'api/get_upload_token/', get_upload_token),
+
 ]
