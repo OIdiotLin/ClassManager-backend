@@ -32,8 +32,12 @@ def get_activity_list(request):
 		if 'content' in request.GET:
 			data = data.filter(content__contains = request.GET['content'])
 
-		content = serializers.serialize('json', data)
-		return HttpResponse(content, content_type = 'application/json')
+		content = [dict(x) for x in data.values()]
+
+		return JsonResponse({
+			'count': data.count(),
+			'result': content
+		})
 
 
 @csrf_exempt

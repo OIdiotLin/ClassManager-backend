@@ -15,6 +15,8 @@ from django.views.decorators.csrf import csrf_exempt
 from app.models import Person
 from app.models import Activity
 
+import json
+
 
 def get_person_list(request):
 	"""
@@ -47,8 +49,12 @@ def get_person_list(request):
 		if 'student_number' in request.GET.keys():
 			data = data.filter(student_number = request.GET['student_number'])
 
-		content = serializers.serialize('json', data)
-		return HttpResponse(content, content_type = 'application/json')
+		content = [dict(x) for x in data.values()]
+
+		return JsonResponse({
+			'count': data.count(),
+			'result': content
+		})
 
 
 @csrf_exempt
@@ -171,7 +177,7 @@ def get_person_by_activity(request):
 	:return: Person.objects
 	"""
 	if request.method == 'GET':
-		activity = obj = Activity.objects.filter(pk = request.GET['id']).first()
+		activity = Activity.objects.filter(pk = request.GET['id']).first()
 
 		if not activity:
 			return JsonResponse({
@@ -180,9 +186,13 @@ def get_person_by_activity(request):
 				'err_info': 'no activity has id = ' + request.GET['id']
 			})
 
-		result = list(
-			Person.objects.get(student_number = sn) for sn in activity.participator.split(',')
-		)
+		data = Person.objects.none()
+		for target in activity.participator.split(','):
+			data = data | Person.objects.filter(student_number = target)
 
-		content = serializers.serialize('json', result)
-		return HttpResponse(content, content_type = 'application/json')
+		content = [dict(x) for x in data.values()]
+
+		return JsonResponse({
+			'count': data.count(),
+			'result': content
+		})
