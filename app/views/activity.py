@@ -15,6 +15,8 @@ from django.views.decorators.csrf import csrf_exempt
 from app.models import Activity
 from app.models import Person
 
+import json
+
 
 def get_activity_list(request):
 	"""
@@ -51,15 +53,17 @@ def add_activity(request):
 	if request.method == 'POST' and token_check(request):
 
 		try:
+			activity_info = json.loads(request.body.decode('utf-8'))['activity']
+
 			new_activity = Activity(
-				name = request.POST.get('name'),
-				date = request.POST.get('date'),
-				time = request.POST.get('time'),
-				place = request.POST.get('place', ''),
-				participation = request.POST.get('participation', 0),
-				participator = request.POST.get('participator', ''),
-				content = request.POST.get('content', ''),
-				images = request.POST.get('images', '')
+				name = activity_info['name'],
+				date = activity_info['date'],
+				time = activity_info['time'],
+				place = activity_info['place'] if 'place' in activity_info.keys() else '',
+				participation = activity_info['participation'] if 'participation' in activity_info.keys() else 0,
+				participator = activity_info['participator'] if 'participator' in activity_info.keys() else '',
+				content = activity_info['content'] if 'content' in activity_info.keys() else '',
+				images = activity_info['images'] if 'images' in activity_info.keys() else ''
 			)
 
 			participators = new_activity.participator.split(',')
@@ -95,17 +99,17 @@ def delete_activity(request):
 	if request.method == 'POST' and token_check(request):
 
 		try:
+			activity_info = json.loads(request.body.decode('utf-8'))['activity']
+
 			target_activity = Activity.objects.filter(
-				id = request.POST.get('id')
+				id = activity_info['id']
 			)
 			if not target_activity.exists():
-				return JsonResponse(
-					{
+				return JsonResponse({
 						'status': 'fail',
 						'err_code': 404,
-						'err_info': 'no object has id = ' + request.POST.get('id')
-					}
-				)
+						'err_info': 'no object has id = ' + activity_info['id']
+				})
 
 			participators = target_activity.first().participator.split(',')
 
@@ -138,28 +142,31 @@ def update_activity(request):
 	if request.method == 'POST' and token_check(request):
 
 		try:
+			target_id = json.loads(request.body.decode('utf-8'))['target_id']
+			activity_info = json.loads(request.body.decode('utf-8'))['activity']
+
 			target_activity = Activity.objects.get(
-				id = request.POST.get('id')
+				id = target_id
 			)
 			if not target_activity:
 				return JsonResponse(
 					{
 						'status':   'fail',
 						'err_code': 404,
-						'err_info': 'no object has id = ' + request.POST.get('id')
+						'err_info': 'no object has id = ' + target_id
 					}
 				)
 
 			original_participation = int(target_activity.participation)
 			current_participation = int(
-				request.POST.get('participation')
-				if 'participation' in request.POST.keys() else original_participation
+				activity_info['participation']
+				if 'participation' in activity_info.keys() else original_participation
 			)
 
 			original_participators = set(target_activity.participator.split(','))
 			current_participators = set(
-				request.POST.get('participator').split(',')
-				if 'participator' in request.POST.keys() else original_participators
+				activity_info['participator'].split(',')
+				if 'participator' in activity_info.keys() else original_participators
 			)
 
 			added_participators = current_participators - original_participators
@@ -181,9 +188,9 @@ def update_activity(request):
 				person.participation -= current_participation
 				person.save()
 
-			for key in request.POST.keys():
+			for key in activity_info.keys():
 				if not key == 'id':
-					exec('target_activity.' + key + '=' + str(repr(request.POST.get(key))))
+					exec('target_activity.' + key + '=' + str(repr(activity_info[key])))
 
 			target_activity.save()
 

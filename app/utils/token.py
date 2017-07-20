@@ -63,8 +63,7 @@ def generate_token_post(request):
 	:param request: HttpRequest
 	:return: md5
 	"""
-	keys = sorted(request.POST.keys())
-	content = ''.join(key + request.POST[key] for key in keys)
+	content = request.body.decode('utf-8')
 	return encode_md5(content)
 
 

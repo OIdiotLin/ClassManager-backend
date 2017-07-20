@@ -66,20 +66,22 @@ def add_person(request):
 	:return: status (success or fail), err_info and err_code
 	"""
 	if request.method == 'POST' and token_check(request):
-
 		try:
+			person_info = json.loads(request.body.decode('utf-8'))['person']
+
 			new_person = Person(
-				student_number = request.POST.get('student_number'),
-				name = request.POST.get('name'),
-				pinyin = request.POST.get('pinyin'),
-				gender = request.POST.get('gender'),
-				native_province = request.POST.get('native_province', ''),
-				dormitory = request.POST.get('dormitory', ''),
-				birthday = request.POST.get('birthday', '2000-01-01'),
-				phone_number = request.POST.get('phone_number', ''),
-				position = request.POST.get('position', ''),
-				participation = request.POST.get('participation', 0)
+				student_number = person_info['student_number'],
+				name = person_info['name'],
+				pinyin = person_info['pinyin'],
+				gender = person_info['gender'],
+				native_province = person_info['native_province'] if 'native_province' in person_info.keys() else '',
+				dormitory = person_info['dormitory'] if 'dormitory' in person_info.keys() else '',
+				birthday = person_info['birthday'] if 'birthday' in person_info.keys() else '2000-01-01',
+				phone_number = person_info['phone_number'] if 'phone_number' in person_info.keys() else '',
+				position = person_info['position'] if 'position' in person_info.keys() else '',
+				participation = person_info['participation'] if 'participation' in person_info.keys() else 0
 			)
+
 			new_person.save()
 			return JsonResponse({'status': 'success'})
 
@@ -105,15 +107,17 @@ def delete_person(request):
 	if request.method == 'POST' and token_check(request):
 
 		try:
+			person_info = json.loads(request.body.decode('utf-8'))['person']
+
 			target_person = Person.objects.filter(
-				student_number = request.POST.get('student_number')
+				student_number = person_info['student_number']
 			)
 			if not target_person.exists():
 				return JsonResponse(
 					{
 						'status': 'fail',
 						'err_code': 404,
-						'err_info': 'no object has student_number = ' + request.POST.get('student_number')
+						'err_info': 'no object has student_number = ' + person_info['student_number']
 					}
 				)
 			target_person.delete()
@@ -140,22 +144,24 @@ def update_person(request):
 	if request.method == 'POST' and token_check(request):
 
 		try:
+			target_student_number = json.loads(request.body.decode('utf-8'))['target_student_number']
+			person_info = json.loads(request.body.decode('utf-8'))['person']
+
 			target_person = Person.objects.get(
-				student_number = request.POST.get('target_student_number')
+				student_number = target_student_number
 			)
+
 			if not target_person:
 				return JsonResponse(
 					{
 						'status': 'fail',
 						'err_code': 404,
-						'err_info': 'no object has student_number = ' + request.POST.get('target_student_number')
+						'err_info': 'no object has student_number = ' + target_student_number
 					}
 				)
-			# return JsonResponse(request.POST)
 
-			for key in request.POST.keys():
-				if not key == 'target_student_number':
-					exec('target_person.' + key + '=' + str(repr(request.POST.get(key))))
+			for key in person_info:
+				exec('target_person.' + key + '=' + str(repr(person_info[key])))
 			target_person.save()
 
 			return JsonResponse({'status': 'success'})
