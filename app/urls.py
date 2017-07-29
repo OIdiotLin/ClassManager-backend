@@ -4,6 +4,7 @@ from django.contrib import admin
 from app.views.person import *
 from app.views.activity import *
 from app.views.qiniuhelper import *
+from app.views.account import *
 
 urlpatterns = [
 	url(r'^admin/', admin.site.urls),
@@ -24,4 +25,6 @@ urlpatterns = [
 	# QINIU
 	url(r'api/get_upload_token/', get_upload_token),
 
+	# ACCOUNT
+	url(r'api/login/', login),
 ]
