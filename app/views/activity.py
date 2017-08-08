@@ -113,10 +113,11 @@ def delete_activity(request):
 
 			participators = target_activity.first().participator.split(',')
 
-			for stu_num in participators:
-				person = Person.objects.get(student_number = stu_num)
-				person.participation -= int(target_activity.first().participation)
-				person.save()
+			if participators[0] != '':
+				for stu_num in participators:
+					person = Person.objects.get(student_number = stu_num)
+					person.participation -= int(target_activity.first().participation)
+					person.save()
 
 			target_activity.delete()
 			return JsonResponse({'status': 'success'})
