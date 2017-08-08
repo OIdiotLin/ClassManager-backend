@@ -25,7 +25,7 @@ class Person(models.Model):
 
 
 class Activity(models.Model):
-	name = models.CharField(verbose_name = '活动名称', max_length = 15)
+	name = models.CharField(verbose_name = '活动名称', max_length = 30)
 	date = models.DateField(verbose_name = '日期', blank = True)
 	time = models.TimeField(verbose_name = '开始时间', blank = True)
 	place = models.CharField(verbose_name = '地点', max_length = 15, blank = True)
