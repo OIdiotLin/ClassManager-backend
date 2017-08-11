@@ -164,9 +164,9 @@ def update_activity(request):
 				if 'participation' in activity_info.keys() else original_participation
 			)
 
-			original_participators = set(target_activity.participator.split(','))
+			original_participators = set(filter(None, target_activity.participator.split(',')))
 			current_participators = set(
-				activity_info['participator'].split(',')
+				filter(None, activity_info['participator'].split(','))
 				if 'participator' in activity_info.keys() else original_participators
 			)
 
