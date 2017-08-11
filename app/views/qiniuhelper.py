@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 # Use Token
 from app.utils.token import token_check
 
-
+import json
 import classmanager.sensitive as key
 
 
@@ -23,9 +23,10 @@ def get_upload_token(request):
 	"""
 	if request.method == 'POST':
 		if token_check(request):
-			if 'filename' in request.POST.keys():
+			request_body = json.loads(request.body.decode('utf-8'))
+			if 'filename' in request_body:
 
-				filename = request.POST['filename']
+				filename = request_body['filename']
 
 				# Generate Qiniu Authorization
 				q = Auth(key.ACCESS_KEY, key.SECRET_KEY)
