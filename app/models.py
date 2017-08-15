@@ -54,3 +54,20 @@ class Feedback(models.Model):
 	def __str__(self):
 		return self.summary
 
+
+class Finance(models.Model):
+	"""
+	班费的单次记录
+	"""
+	income = models.FloatField(verbose_name = '收入', default = 0)
+	expense = models.FloatField(verbose_name = '支出', default = 0)
+	date = models.DateField(verbose_name = '日期')
+	event = models.TextField(verbose_name = '相关事件')
+	details = models.TextField(verbose_name = '详细信息', blank = True)
+
+	def __unicode__(self):
+		return '{} +{:.2f}, -{:.2f}'.format(self.event.encode('utf-8'), self.income, self.expense).encode('utf-8')
+
+	def __str__(self):
+		return '{} +{:.2f}, -{:.2f}'.format(self.event.encode('utf-8'), self.income, self.expense).encode('utf-8')
+
