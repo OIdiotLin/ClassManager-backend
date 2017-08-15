@@ -39,3 +39,18 @@ class Activity(models.Model):
 
 	def __str__(self):
 		return self.name
+
+
+class Feedback(models.Model):
+	summary = models.TextField(verbose_name = '反馈总结', max_length = 50)
+	details = models.TextField(verbose_name = '详细信息', max_length = 500, blank = True)
+	category = models.CharField(verbose_name = '反馈分类', choices = (('A', 'Advice'), ('B', 'Bug')),
+								max_length = 2, default = 'B')
+	contact = models.EmailField(verbose_name = '联系邮箱')
+
+	def __unicode__(self):
+		return self.summary
+
+	def __str__(self):
+		return self.summary
+
