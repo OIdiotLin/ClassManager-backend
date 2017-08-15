@@ -6,6 +6,7 @@ from app.views.activity import *
 from app.views.qiniuhelper import *
 from app.views.account import *
 from app.views.feedback import *
+from app.views.finance import *
 
 urlpatterns = [
 	url(r'^admin/', admin.site.urls),
@@ -30,5 +31,9 @@ urlpatterns = [
 	url(r'api/login/', login),
 
 	# FEEDBACK
-	url(r'api/add_feedback/', add_feedback)
+	url(r'api/add_feedback/', add_feedback),
+
+	# FINANCE
+	url(r'api/add_finance/', add_finance),
+	url(r'api/get_balance', get_balance)
 ]
