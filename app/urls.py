@@ -5,6 +5,7 @@ from app.views.person import *
 from app.views.activity import *
 from app.views.qiniuhelper import *
 from app.views.account import *
+from app.views.feedback import *
 
 urlpatterns = [
 	url(r'^admin/', admin.site.urls),
@@ -27,4 +28,7 @@ urlpatterns = [
 
 	# ACCOUNT
 	url(r'api/login/', login),
+
+	# FEEDBACK
+	url(r'api/add_feedback/', add_feedback)
 ]
