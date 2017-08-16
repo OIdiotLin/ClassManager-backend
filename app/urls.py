@@ -35,5 +35,6 @@ urlpatterns = [
 
 	# FINANCE
 	url(r'api/add_finance/', add_finance),
-	url(r'api/get_balance', get_balance)
+	url(r'api/get_balance/', get_balance),
+	url(r'api/get_finance_list/', get_finance_list)
 ]

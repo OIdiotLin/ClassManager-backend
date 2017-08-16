@@ -18,6 +18,23 @@ from app.models import Finance
 import json
 
 
+def get_finance_list(request):
+	"""
+	Get Finance list in databases
+	:param request: httpRequest - GET
+	:return: finance list (json)
+	"""
+	if request.method == 'GET':
+
+		data = Finance.objects.all()
+		content = [dict(f) for f in data.values()]
+
+		return JsonResponse({
+			'count': data.count(),
+			'result': content
+		})
+
+
 @csrf_exempt
 def add_finance(request):
 	"""
