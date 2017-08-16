@@ -25,7 +25,7 @@ def add_feedback(request):
 	:param request: httpRequest
 	:return: status (success or fail), err_info and err_code
 	"""
-	if request.method == 'POST' and token_check(request):
+	if request.method == 'POST':
 		try:
 			feedback_info = json.loads(request.body.decode('utf-8'))['feedback']
 
