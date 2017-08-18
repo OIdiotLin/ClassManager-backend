@@ -114,7 +114,7 @@ def update_finance(request):
 	if request.method == 'POST' and token_check(request):
 
 		try:
-			target_id = json.loads(request.body.decode('utf-8'))['id']
+			target_id = json.loads(request.body.decode('utf-8'))['target_id']
 			finance_info = json.loads(request.body.decode('utf-8'))['finance']
 
 			target_finance = Finance.objects.get(
@@ -153,6 +153,8 @@ def get_balance(request):
 	"""
 	if request.method == 'GET':
 		try:
+			if Finance.objects.count() == 0:
+				return JsonResponse({'balance': 0})
 			incomes = Finance.objects.all().aggregate(Sum('income'))['income__sum']
 			expenses = Finance.objects.all().aggregate(Sum('expense'))['expense__sum']
 			return JsonResponse({'balance': incomes-expenses})
