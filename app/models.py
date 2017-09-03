@@ -66,8 +66,10 @@ class Finance(models.Model):
 	details = models.TextField(verbose_name = '详细信息', blank = True)
 
 	def __unicode__(self):
-		return '{} +{:.2f}, -{:.2f}'.format(self.event.encode('utf-8'), self.income, self.expense).encode('utf-8')
+		return '%s +%.2f -%.2f' % (self.event, self.income, self.expense)
+		# return '{} +{:.2f}, -{:.2f}'.format(self.event.encode('utf-8'), self.income, self.expense).encode('utf-8')
 
 	def __str__(self):
-		return '{} +{:.2f}, -{:.2f}'.format(self.event.encode('utf-8'), self.income, self.expense).encode('utf-8')
+		return '%s +%.2f -%.2f' % (self.event, self.income, self.expense)
+		# return '{} +{:.2f}, -{:.2f}'.format(self.event.encode('utf-8'), self.income, self.expense).encode('utf-8')
 
