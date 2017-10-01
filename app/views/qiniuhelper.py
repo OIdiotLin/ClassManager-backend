@@ -26,7 +26,7 @@ def get_upload_token(request):
 			request_body = json.loads(request.body.decode('utf-8'))
 			if 'filename' in request_body:
 
-				filename = request_body['filename'].encode('utf-8')
+				filename = request_body['filename']
 
 				# Generate Qiniu Authorization
 				q = Auth(key.ACCESS_KEY, key.SECRET_KEY)
@@ -36,6 +36,7 @@ def get_upload_token(request):
 
 				return JsonResponse({
 					'status': 'success',
+					'file_key': filename,
 					'upload_token': token,
 				})
 			else:
